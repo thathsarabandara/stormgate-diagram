@@ -1,0 +1,77 @@
+---
+config:
+  layout: fixed
+---
+flowchart TB
+ subgraph subGraph0["Client Layer"]
+        A["Web Browser"]
+        B["Mobile App"]
+        C["Tenant Admin Portal"]
+  end
+ subgraph subGraph1["Load Balancer"]
+        LB["Cloudflare<br>Free Tier"]
+  end
+ subgraph subGraph2["API Gateway Layer"]
+        GW["Spring Cloud Gateway<br>Tenant-aware Routing"]
+  end
+ subgraph subGraph3["Frontend Layer"]
+        FE["React App<br>Hosted on Vercel"]
+  end
+ subgraph subGraph4["Core Services"]
+        AUTH["Auth Service<br>Spring Boot"]
+        PROFILE["Profile Service<br>Spring Boot"]
+        NOTIFY["Notification Service<br>Spring Boot"]
+  end
+ subgraph subGraph5["Business Services"]
+        ORDER["Order Service<br>Spring Boot"]
+        PAYMENT["Payment Service<br>Spring Boot"]
+        CART["Cart Service<br>Spring Boot"]
+  end
+ subgraph subGraph6["Microservices Layer"]
+        subGraph4
+        subGraph5
+  end
+ subgraph subGraph7["Service Discovery & Config"]
+        EUREKA["Eureka Server<br>Service Discovery"]
+        CONFIG["Config Server<br>Centralized Config"]
+  end
+ subgraph subGraph8["Primary Databases"]
+        AUTH_DB[("Auth DB<br>SQL")]
+        PROFILE_DB[("Profile DB<br>SQL")]
+        ORDER_DB[("Order DB<br>SQL")]
+        NOTIFICATION_DB[("Notification DB<br> SQL")]
+        CART_DB[("Cart DB<br> SQL")]
+        PAYMENT_DB[("Payment_DB<br> SQL")]
+  end
+ subgraph subGraph9["Shared Infrastructure"]
+        REDIS[("Redis<br>Cache &amp; Session")]
+        RABBITMQ["RabbitMQ<br>Message Broker"]
+  end
+ subgraph subGraph10["Data Layer"]
+        subGraph8
+        subGraph9
+  end
+ subgraph s1["CI/CD"]
+        GHA["GitHub Actions<br>CI/CD Pipelines"]
+  end
+ subgraph Monitoring["Monitoring"]
+        ACTUATOR["Spring Boot Actuator"]
+        UPTIME["UptimeRobot<br>Monitoring"]
+  end
+ subgraph subGraph13["Monitoring & DevOps"]
+        s1
+        Monitoring
+  end
+    A --> LB
+    B --> LB
+    C --> LB
+    LB --> GW
+    GW --> FE & AUTH & PROFILE & ORDER & PAYMENT & CART & NOTIFY
+    AUTH --> EUREKA & AUTH_DB
+    PROFILE --> EUREKA & PROFILE_DB
+    ORDER --> EUREKA & ORDER_DB & RABBITMQ
+    PAYMENT --> EUREKA & RABBITMQ & PAYMENT_DB
+    CART --> EUREKA & CART_DB
+    NOTIFY --> EUREKA & REDIS & NOTIFICATION_DB
+    GHA -.-> AUTH & PROFILE & ORDER
+    ACTUATOR -.-> AUTH

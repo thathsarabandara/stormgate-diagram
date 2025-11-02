@@ -1,0 +1,76 @@
+---
+config:
+  layout: fixed
+---
+flowchart TB
+ subgraph Microservices["Microservices"]
+        AUTH["Auth Service"]
+        PROFILE["Profile Service"]
+        ORDER["Order Service"]
+        PAYMENT["Payment Service"]
+        CART["Cart Service"]
+        NOTIFY["Notification Service"]
+  end
+ subgraph subGraph1["Auth Domain"]
+        AUTH_DB[("Auth DB")]
+        AUTH_DB_T1["tenant_001.users"]
+        AUTH_DB_T2["tenant_002.users"]
+        AUTH_DB_TN["tenant_xxx.users"]
+  end
+ subgraph subGraph2["Profile Domain"]
+        PROFILE_DB[("Profile DB")]
+        PROFILE_DB_T1["tenant_001.profiles"]
+        PROFILE_DB_T2["tenant_002.profiles"]
+        PROFILE_DB_TN["tenant_xxx.profiles"]
+  end
+ subgraph subGraph3["Order Domain"]
+        ORDER_DB[("Order DB")]
+        ORDER_DB_T1["tenant_001.orders"]
+        ORDER_DB_T2["tenant_002.orders"]
+        ORDER_DB_TN["tenant_xxx.orders"]
+  end
+ subgraph subGraph4["Payment Domain"]
+        PAYMENT_DB[("Payment DB")]
+        PAYMENT_DB_T1["tenant_001.payments"]
+        PAYMENT_DB_T2["tenant_002.payments"]
+        PAYMENT_DB_TN["tenant_xxx.payments"]
+  end
+ subgraph subGraph5["Cart Domain"]
+        CART_DB[("Cart DB")]
+        CART_DB_T1["tenant_001.carts"]
+        CART_DB_T2["tenant_002.carts"]
+        CART_DB_TN["tenant_xxx.carts"]
+  end
+ subgraph subGraph6["Notification Domain"]
+        NOTIFY_DB[("Notification DB")]
+        NOTIFY_DB_T1["tenant_001.notifications"]
+        NOTIFY_DB_T2["tenant_002.notifications"]
+        NOTIFY_DB_TN["tenant_xxx.notifications"]
+  end
+ subgraph subGraph7["Shared Data"]
+        SHARED_DB[("Shared DB")]
+        TENANTS["tenants table"]
+        API_KEYS["api_keys table"]
+        USAGE["usage_metrics table"]
+  end
+ subgraph Databases["Databases"]
+        subGraph1
+        subGraph2
+        subGraph3
+        subGraph4
+        subGraph5
+        subGraph6
+        subGraph7
+  end
+    AUTH --> AUTH_DB & SHARED_DB
+    PROFILE --> PROFILE_DB & SHARED_DB
+    ORDER --> ORDER_DB & SHARED_DB
+    PAYMENT --> PAYMENT_DB & SHARED_DB
+    CART --> CART_DB & SHARED_DB
+    NOTIFY --> NOTIFY_DB & SHARED_DB
+    AUTH_DB --> AUTH_DB_T1 & AUTH_DB_T2 & AUTH_DB_TN
+    PROFILE_DB --> PROFILE_DB_T1 & PROFILE_DB_T2 & PROFILE_DB_TN
+    ORDER_DB --> ORDER_DB_T1 & ORDER_DB_T2 & ORDER_DB_TN
+    PAYMENT_DB --> PAYMENT_DB_T1 & PAYMENT_DB_T2 & PAYMENT_DB_TN
+    CART_DB --> CART_DB_T1 & CART_DB_T2 & CART_DB_TN
+    NOTIFY_DB --> NOTIFY_DB_T1 & NOTIFY_DB_T2 & NOTIFY_DB_TN

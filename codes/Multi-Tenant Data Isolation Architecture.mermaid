@@ -1,0 +1,47 @@
+---
+config:
+  layout: fixed
+---
+flowchart TB
+ subgraph subGraph0["Tenant Registration Flow"]
+        TR["Tenant Registration<br>API"]
+        TC["Tenant Context<br>Resolver"]
+        TS["Tenant Schema<br>Manager"]
+  end
+ subgraph subGraph1["Tenant Schemas"]
+        T1["tenant_001 Schema"]
+        T2["tenant_002 Schema"]
+        T3["tenant_003 Schema"]
+        TN["tenant_XXX Schema"]
+  end
+ subgraph subGraph2["Shared Schemas"]
+        SS["shared_schema<br>Tenant Metadata"]
+  end
+ subgraph subGraph3["Database Layer"]
+        DB[("SQL<br>Shared Cluster")]
+        subGraph1
+        subGraph2
+  end
+ subgraph subGraph4["Tenant Context"]
+        TCH["Tenant Context Holder<br>ThreadLocal"]
+  end
+ subgraph subGraph5["Data Access"]
+        DAO["Tenant-Aware<br>DAO Layer"]
+        JPA["Spring Data JPA<br>with Schema Switch"]
+  end
+ subgraph subGraph6["Application Layer"]
+        subGraph4
+        subGraph5
+  end
+ subgraph subGraph7["API Flow"]
+        MID["Tenant Interceptor"]
+        REQ["Incoming Request"]
+  end
+    TR --> TC
+    TC --> TS
+    REQ --> MID
+    MID --> TCH
+    TCH --> DAO
+    DAO --> JPA
+    JPA --> T1 & T2 & T3
+    TS --> SS & T1 & T2 & T3

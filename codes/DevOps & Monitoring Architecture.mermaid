@@ -1,0 +1,54 @@
+---
+config:
+  layout: fixed
+---
+flowchart TB
+ subgraph subGraph0["Version Control"]
+        GITHUB["GitHub Repository"]
+        BRANCHES["Main + Feature<br>Branches"]
+        PR["Pull Requests with<br>Automated Checks"]
+  end
+ subgraph subGraph1["Build Phase"]
+        BUILD["Docker Build"]
+        TEST["Automated Tests"]
+        SCAN["Security Scan<br>Snyk/SonarCloud"]
+  end
+ subgraph subGraph2["Deployment Phase"]
+        DEPLOY_STG["Deploy to Staging"]
+        E2E["End-to-End Tests"]
+        DEPLOY_PROD["Deploy to Production"]
+  end
+ subgraph subGraph3["CI/CD Pipeline"]
+        subGraph1
+        subGraph2
+  end
+ subgraph Hosting["Hosting"]
+        RAILWAY["Railway.app<br>Microservices"]
+        VERCEL["Vercel<br>React Frontend"]
+        SUPABASE["SQL Database"]
+        REDISLAB["Redis Labs<br>Free Tier"]
+  end
+ subgraph Monitoring["Monitoring"]
+        UPTIME["UptimeRobot<br>API Monitoring"]
+        LOGZ["Logz.io<br>Log Management"]
+        ACTUATOR["Spring Boot Actuator<br>Health Checks"]
+  end
+ subgraph Infrastructure["Infrastructure"]
+        Hosting
+        Monitoring
+  end
+ subgraph Alerting["Alerting"]
+        ALERTS["Email/Slack Alerts"]
+        METRICS["Custom Metrics<br>&amp; Dashboards"]
+  end
+    GITHUB --> BUILD
+    BUILD --> TEST
+    TEST --> SCAN
+    SCAN --> DEPLOY_STG
+    DEPLOY_STG --> E2E & RAILWAY
+    E2E --> DEPLOY_PROD
+    DEPLOY_PROD --> RAILWAY & VERCEL
+    RAILWAY --> SUPABASE & REDISLAB & UPTIME & LOGZ & ACTUATOR
+    UPTIME --> ALERTS
+    LOGZ --> ALERTS
+    ACTUATOR --> METRICS

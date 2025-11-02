@@ -1,0 +1,42 @@
+---
+config:
+  layout: fixed
+---
+flowchart TD
+ subgraph subGraph0["Incoming Request"]
+        REQ["API Request<br>X-Tenant-ID: tenant_123"]
+  end
+ subgraph subGraph1["API Gateway"]
+        GW["Spring Cloud Gateway"]
+        RL["Rate Limiting<br>per Tenant"]
+        AC["Aggregation<br>&amp; Caching"]
+  end
+ subgraph subGraph2["Service Mesh"]
+        SD["Service Discovery<br>Eureka"]
+        LB["Client-side<br>Load Balancing"]
+        CB["Circuit Breaker<br>Resilience4j"]
+  end
+ subgraph subGraph3["Order Processing"]
+        CART["Cart Service"]
+        ORDER["Order Service"]
+        PAYMENT["Payment Service"]
+        NOTIFY["Notification Service"]
+  end
+ subgraph subGraph4["Business Flow"]
+        subGraph3
+  end
+ subgraph subGraph5["Async Communication"]
+        MQ["RabbitMQ<br>Message Broker"]
+        EVT["Event-Driven<br>Architecture"]
+  end
+    GW --> RL & SD
+    RL --> AC
+    REQ --> GW
+    SD --> LB
+    LB --> CART
+    CART --> ORDER
+    ORDER --> MQ
+    MQ --> PAYMENT & NOTIFY
+    PAYMENT --> MQ
+    CB --> CART & ORDER & PAYMENT
+    EVT --> MQ

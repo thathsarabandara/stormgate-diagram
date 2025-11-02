@@ -1,0 +1,62 @@
+graph LR
+    subgraph Developer Workflow
+        DEV[Developer]
+        GIT[GitHub Repository]
+    end
+
+    subgraph CI Pipeline
+        subgraph Build Stage
+            B1[Checkout Code]
+            B2[Run Unit Tests]
+            B3[Build Docker Image]
+            B4[Security Scan]
+        end
+        
+        subgraph Test Stage
+            T1[Integration Tests]
+            T2[API Contract Tests]
+            T3[Performance Tests]
+        end
+        
+        subchart Deployment Stage
+            D1[Deploy to Staging]
+            D2[Run E2E Tests]
+            D3[Deploy to Production]
+        end
+    end
+
+    subgraph Hosting Environments
+        subgraph Staging
+            STG_AUTH[Auth Service<br/>Railway]
+            STG_DB[(Staging DB<br/>Supabase)]
+        end
+        
+        subgraph Production
+            PROD_AUTH[Auth Service<br/>Railway]
+            PROD_DB[(Production DB<br/>Supabase)]
+        end
+    end
+
+    subgraph Monitoring
+        MON[GitHub Actions<br/>Status Checks]
+    end
+
+    DEV --> GIT
+    GIT --> B1
+    B1 --> B2
+    B2 --> B3
+    B3 --> B4
+    B4 --> T1
+    T1 --> T2
+    T2 --> T3
+    T3 --> D1
+    D1 --> D2
+    D2 --> D3
+    
+    D1 --> STG_AUTH
+    D3 --> PROD_AUTH
+    STG_AUTH --> STG_DB
+    PROD_AUTH --> PROD_DB
+    
+    STG_AUTH --> MON
+    PROD_AUTH --> MON

@@ -1,0 +1,17 @@
+stateDiagram-v2
+    [*] --> TenantSignup
+    TenantSignup --> ValidateBusiness: Submit registration
+    ValidateBusiness --> CreateTenant: Validation passed
+    CreateTenant --> GenerateAPIKeys: Tenant record created
+    GenerateAPIKeys --> ConfigureServices: API keys generated
+    ConfigureServices --> SendWelcomeEmail: Services configured
+    SendWelcomeEmail --> Active: Welcome email sent
+    Active --> [*]
+    
+    state CreateTenant {
+        [*] --> CreateRecord
+        CreateRecord --> SetQuotas
+        SetQuotas --> InitConfig
+        InitConfig --> [*]
+    }
+    

@@ -1,0 +1,25 @@
+sequenceDiagram
+    participant C as Client
+    participant G as API Gateway
+    participant A as Auth Service
+    participant T as Tenant Service
+    participant D as Database
+    participant R as Redis
+
+    C->>G: Request with API Key<br/>or JWT Token
+    G->>A: Validate Token &<br/>Extract Tenant ID
+    A->>D: Verify Tenant Status<br/>(shared_schema.tenants)
+    D-->>A: Tenant Details
+    A->>R: Cache Tenant Config<br/>(TTL: 5 minutes)
+    A-->>G: Tenant Context +<br/>User Claims
+    G->>G: Apply Tenant-specific<br/>Routing Rules
+    G->>T: Forward to Target Service<br/>with X-Tenant-ID Header
+    
+    loop Service-level Auth
+        T->>T: Validate Tenant Context<br/>& Permissions
+        T->>D: Tenant-specific DB<br/>(tenant_xxx schema)
+        D-->>T: Tenant Data
+        T-->>G: Response
+    end
+    
+    G-->>C: Response
